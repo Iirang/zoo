@@ -1,12 +1,15 @@
 "use client"
+import { useEffect, useState } from "react"
 import RouletteWheel from "@/components/RouletteWheel"
 import SpinButton from "@/components/SpinButton"
 import WinnerDisplay from "@/components/WinnerDisplay"
 import SectionEditor from "@/components/SectionEditor"
 import PasteInput from "@/components/PasteInput"
+import Confetti from "@/components/Confetti"
 import { useRoulette } from "@/hooks/useRoulette"
 
 export default function Home() {
+  const [confettiTrigger, setConfettiTrigger] = useState(0)
   const {
     sections,
     addSection,
@@ -22,8 +25,15 @@ export default function Home() {
     canRemove,
   } = useRoulette()
 
+  useEffect(() => {
+    if (spinState === "done" && winner) {
+      setConfettiTrigger((t) => t + 1)
+    }
+  }, [spinState, winner])
+
   return (
     <main className="min-h-screen bg-[#0f0f1a] text-white px-4 py-8">
+      <Confetti trigger={confettiTrigger} />
       <h1 className="text-center text-3xl font-extrabold mb-8 bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
         🎡 Cat Spin
       </h1>
